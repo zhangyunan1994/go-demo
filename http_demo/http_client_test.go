@@ -13,8 +13,5 @@ func TestHttpGet(t *testing.T)  {
 		panic(err)
 	}
 	fmt.Println(response)
-	if response.StatusCode == 200 {
-		response.Body.
-	}
 	t.Log(response)
 }
