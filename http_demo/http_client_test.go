@@ -10,16 +10,22 @@ import (
 )
 
 func TestHttpGet(t *testing.T) {
-	response, err := http.Get("https://blog.csdn.net/zyndev")
+	response, err := http.Get("https://b959e645-00ae-4bc3-8a55-7224d08b1d91.mock.pstmn.io/user/1")
 	if err != nil {
 		t.Error(err)
 		panic(err)
 	}
+	defer response.Body.Close()
 	t.Log(response)
+	fmt.Println(response.StatusCode)
+	fmt.Println(response.Status)
+	fmt.Println(response.Header)
+	body, _ := ioutil.ReadAll(response.Body)
+	fmt.Println(string(body))
 }
 
 func TestHttpGetHeader(t *testing.T) {
-	targetUrl := "https://blog.csdn.net/zyndev"
+	targetUrl := "https://b959e645-00ae-4bc3-8a55-7224d08b1d91.mock.pstmn.io/user/1"
 
 	req, _ := http.NewRequest("GET", targetUrl, nil)
 
@@ -30,6 +36,7 @@ func TestHttpGetHeader(t *testing.T) {
 		t.Error(err)
 		panic(err)
 	}
+	defer response.Body.Close()
 	t.Log(response)
 }
 
@@ -44,13 +51,14 @@ func TestHttpPost(t *testing.T) {
 		t.Error(err)
 		panic(err)
 	}
+	defer response.Body.Close()
 	t.Log(response)
 }
 
 func TestHttpPostForm(t *testing.T) {
 	targetUrl := "https://blog.csdn.net/zyndev"
 
-	payload := url.Values{"key":{"value"}, "id": {"123"}}
+	payload := url.Values{"key": {"value"}, "id": {"123"}}
 
 	response, err := http.PostForm(targetUrl, payload)
 
@@ -58,25 +66,87 @@ func TestHttpPostForm(t *testing.T) {
 		t.Error(err)
 		panic(err)
 	}
+	defer response.Body.Close()
 	t.Log(response)
 }
 
-func TestHttpPut(t *testing.T)  {
-	targetUrl := "http://xxxxx:8080/v2/repos/wh_flowDataSource1"
+func TestHttpPostJSON(t *testing.T) {
+	targetUrl := "https://b959e645-00ae-4bc3-8a55-7224d08b1d91.mock.pstmn.io/user/1"
 
-	payload := strings.NewReader("{\n    \"schema\": [\n      {\n        \"key\": \"a\",\n        \"valtype\": \"string\",\n        \"required\": false\n      }\n    ]\n}")
+	payload := strings.NewReader("{\"name\":\"张瑀楠\"}")
+
+	req, _ := http.NewRequest("POST", targetUrl, payload)
+
+	req.Header.Add("Content-Type", "application/json")
+
+	response, err := http.DefaultClient.Do(req)
+
+	if err != nil {
+		t.Error(err)
+		panic(err)
+	}
+
+	defer response.Body.Close()
+	t.Log(response)
+
+}
+
+func TestHttpPut(t *testing.T) {
+
+	targetUrl := "https://b959e645-00ae-4bc3-8a55-7224d08b1d91.mock.pstmn.io/user/1"
+
+	payload := strings.NewReader("{\"name\":\"张瑀楠\"}")
 
 	req, _ := http.NewRequest("PUT", targetUrl, payload)
 
 	req.Header.Add("Content-Type", "application/json")
-	req.Header.Add("Authorization", "bmgAAGI155F6MJ3N2Tk9ruL_6XQpx-uxkkg:yKx_OYDtI3njD7-c7Y87Oov0GpI=:eyJyZXNvdXJBvcy93aF9mbG93RGF0YVNvdXJjZTEiLCJleHBpcmVzIjoxNTM2NzU1MjkwLCJjb250ZW50TUQ1IjoiIiwiY29udGVudFR5cGUiOiJhcHBsaWNhdGlvbi9qc29uIiwiaGVhZGVycyI6IiIsIm1ldGhvZCI6IlBVVCJ9")
-	req.Header.Add("Date", "Wed, 12 Sep 2018 02:10:09 GMT")
 
-	res, _ := http.DefaultClient.Do(req)
+	response, err := http.DefaultClient.Do(req)
 
-	defer res.Body.Close()
-	body, _ := ioutil.ReadAll(res.Body)
+	if err != nil {
+		t.Error(err)
+		panic(err)
+	}
 
-	fmt.Println(res)
-	fmt.Println(string(body))
+	defer response.Body.Close()
+	t.Log(response)
+}
+
+func TestHttpPatch(t *testing.T) {
+	targetUrl := "https://b959e645-00ae-4bc3-8a55-7224d08b1d91.mock.pstmn.io/user/1"
+
+	payload := strings.NewReader("{\"name\":\"张瑀楠\"}")
+
+	req, _ := http.NewRequest("PATCH", targetUrl, payload)
+
+	req.Header.Add("Content-Type", "application/json")
+
+	response, err := http.DefaultClient.Do(req)
+
+	if err != nil {
+		t.Error(err)
+		panic(err)
+	}
+
+	defer response.Body.Close()
+	t.Log(response)
+}
+
+func TestHttpDelete(t *testing.T) {
+
+	targetUrl := "https://ddbc5ffb-c596-4f78-a99d-a6ea93bdc14f.mock.pstmn.io/user/1"
+
+	req, _ := http.NewRequest("DELETE", targetUrl, nil)
+
+	req.Header.Add("Authorization", "xxxx")
+
+	response, err := http.DefaultClient.Do(req)
+
+	if err != nil {
+		t.Error(err)
+		panic(err)
+	}
+
+	defer response.Body.Close()
+	t.Log(response)
 }
